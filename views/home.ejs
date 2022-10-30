@@ -1,0 +1,73 @@
+<div>
+    <% if (loggedIn) { %>
+        <h1>You are currently logged in as <%= name %></h1>
+    <% } else { %>
+        <h1>You are currently logged out</h1>
+    <% } %>
+    <a href="/login" > <button>Login</button> </a>
+    <a href="/logout" > <button>Logout</button> </a>
+
+        <h2>Tablica</h2>
+        <ol>
+            <% for (var i = 0; i < teams.length; i++) { %>
+                <li>
+                    <p><b><%= teams[i].name %></b>, broj golova: <%= teams[i].goals %>, broj bodova: <%= teams[i].score%></p>
+                </li>
+            <% } %>
+        </ol>
+
+        <h2>Utakmice</h2>
+
+        <ul>
+            <% for (var i = 0; i < games.length; i++) { %>
+                <li>
+                        <% if (loggedIn && name == "Admin") { %>
+<div>
+    <h3><%= games[i].team1 %> - <%= games[i].team2 %></h3>
+    <form action="/editgame?id=<%= games[i].id %>" method="post">
+        <input type="text" size="4" id="score1" name="score1" value=<%= games[i].score1 %>>
+        <span> - </span>
+        <input type="text" size="4" id="score2" name="score2" value=<%= games[i].score2 %>>
+        <button type="submit">Uredi</button>
+    </form>
+</div>
+                        <% } else { %>
+                    <div>
+                        <h3><%= games[i].team1 %> - <%= games[i].team2 %></h3>
+                        <p><%= games[i].score1 %> - <%= games[i].score2 %></p>
+                    </div>
+                        <% } %>
+                </li>
+            <% } %>
+        </ul>
+
+        <h2>Komentari</h2>
+
+        <% if (loggedIn) { %>
+            <form action="/addcomment" method="post">
+                <input type="text" size="50" id="newcomment" name="newcomment"%>>
+                <button type="submit">Dodaj komentar</button>
+            </form>
+        <% } %>
+        <ul>
+            <% for (var i = 0; i < comments.length; i++) { %>
+                <li>
+                    <div>
+                        <p> (<%= comments[i].time.getHours() %>:<%= comments[i].time.getMinutes() %>) <b><%= comments[i].user %></b> je napisao:</p>
+                        <% if (loggedIn && (name == "Admin" || comments[i].user == name)) { %>
+                            <form action="/editcomment?id=<%= comments[i].id %>" method="post">
+                                <input type="text" size="50" id="comment" name="comment"%> value="<%= comments[i].text %>">
+                                <button type="submit">Uredi komentar</button>
+                                <button type="submit" formaction="/deletecomment?id=<%= comments[i].id %>">Izbriši komentar</button>
+
+                            </form>
+                        <% } else { %>
+                        <p><%= comments[i].text %></p>
+                        <% } %>
+                    </div>
+                </li>
+            <% } %>
+        </ul>
+</div>
+
+
